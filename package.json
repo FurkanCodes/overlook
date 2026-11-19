@@ -1,0 +1,75 @@
+{
+  "name": "overlook-dash",
+  "version": "0.1.0",
+  "description": "Live, checked dashboards any MCP coding agent can build from your local data, with any model.",
+  "license": "MIT",
+  "author": "furkancodes",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/furkancodes/overlook.git"
+  },
+  "homepage": "https://github.com/furkancodes/overlook#readme",
+  "bugs": {
+    "url": "https://github.com/furkancodes/overlook/issues"
+  },
+  "mcpName": "io.github.furkancodes/overlook",
+  "type": "module",
+  "bin": {
+    "overlook": "dist/src/cli.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/build-ui.mjs",
+    "build:ui": "node scripts/build-ui.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.ui.json",
+    "test": "vitest run",
+    "eval": "node dist/eval/run.js",
+    "prepublishOnly": "npm run build && npm test",
+    "pretest": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "dashboard",
+    "duckdb",
+    "llm",
+    "agents",
+    "data-visualization"
+  ],
+  "dependencies": {
+    "@duckdb/node-api": "2.0.0-r.1",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@types/d3-array": "^3.2.2",
+    "@types/d3-axis": "^3.0.6",
+    "@types/d3-format": "^3.0.4",
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-selection": "^3.0.12",
+    "@types/d3-shape": "^3.2.0",
+    "@types/d3-time-format": "^4.0.3",
+    "@types/node": "^26.6.6",
+    "d3-array": "^3.2.5",
+    "d3-axis": "^3.0.1",
+    "d3-format": "^3.1.3",
+    "d3-scale": "^4.0.3",
+    "d3-selection": "^3.0.1",
+    "d3-shape": "^3.2.1",
+    "d3-time-format": "^4.1.1",
+    "esbuild": "^0.28.2",
+    "lucide": "^1.75.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
+  },
+  "files": [
+    "dist/src",
+    "dist/ui",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ]
+}

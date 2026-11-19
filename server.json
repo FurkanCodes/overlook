@@ -1,0 +1,56 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.furkancodes/overlook",
+  "title": "Overlook",
+  "description": "Live local dashboards any agent and model can build from your CSV, Parquet, SQLite or Postgres data.",
+  "repository": {
+    "url": "https://github.com/furkancodes/overlook",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/furkancodes/overlook#readme",
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "overlook-dash",
+      "version": "0.1.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "OVERLOOK_HOME",
+          "description": "Folder for Overlook's config and saved dashboards (default ~/.overlook)",
+          "format": "filepath"
+        },
+        {
+          "name": "OVERLOOK_PORT",
+          "description": "Port of the local dashboard web server (default 4777)",
+          "format": "number"
+        },
+        {
+          "name": "OVERLOOK_OPEN",
+          "description": "Set to 0 to stop opening new dashboards in the browser",
+          "format": "boolean"
+        },
+        {
+          "name": "OVERLOOK_AGENT_SOURCES",
+          "description": "Set to 0 to stop the agent from adding data files from the project",
+          "format": "boolean"
+        },
+        {
+          "name": "OVERLOOK_SAMPLES",
+          "description": "Set to 0 to keep sample rows out of what the model sees",
+          "format": "boolean"
+        }
+      ]
+    }
+  ]
+}

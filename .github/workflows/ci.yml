@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (${{ matrix.os }}, Node ${{ matrix.node }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [22, 24]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      # Builds the CLI and the dashboard page, then runs every test:
+      # unit, security (DuckDB lockdown), web server and MCP over stdio.
+      - run: npm test
+      - name: Check what npm would publish
+        run: npm pack --dry-run
+      - name: Smoke-test the CLI from the packed tarball
+        shell: bash
+        run: |
+          npm pack
+          mkdir -p "$RUNNER_TEMP/smoke/data"
+          cp examples/data/orders.csv "$RUNNER_TEMP/smoke/data/"
+          cd "$RUNNER_TEMP/smoke"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund "$GITHUB_WORKSPACE"/overlook-dash-*.tgz
+          OVERLOOK_HOME="$RUNNER_TEMP/smoke/home" OVERLOOK_OPEN=0 npx --no-install overlook auto data/orders.csv
+          curl -fsS "http://127.0.0.1:4777/api/d/orders-overview/health"
+          npx --no-install overlook stop

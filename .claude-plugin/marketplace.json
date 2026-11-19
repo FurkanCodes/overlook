@@ -1,0 +1,17 @@
+{
+  "name": "overlook",
+  "description": "Overlook: live dashboards of your local data, built by your agent and opened in the browser.",
+  "owner": {
+    "name": "furkancodes",
+    "url": "https://github.com/furkancodes"
+  },
+  "plugins": [
+    {
+      "name": "overlook",
+      "source": "./plugin",
+      "description": "Build live dashboards of the project's data (CSV, Parquet, SQLite, DuckDB, Postgres, MySQL) and open them at a local address.",
+      "category": "data",
+      "tags": ["dashboard", "data", "duckdb", "charts", "analytics"]
+    }
+  ]
+}

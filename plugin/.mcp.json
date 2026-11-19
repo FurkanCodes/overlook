@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "overlook": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/launch.mjs"],
+      "env": {
+        "OVERLOOK_PROJECT": "${CLAUDE_PROJECT_DIR}"
+      }
+    }
+  }
+}

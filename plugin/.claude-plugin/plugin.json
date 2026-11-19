@@ -1,0 +1,17 @@
+{
+  "name": "overlook",
+  "displayName": "Overlook",
+  "version": "0.1.0",
+  "description": "Live, checked dashboards of your local data. Say \"make a dashboard of my data\" and it opens in the browser at http://127.0.0.1:4777.",
+  "author": {
+    "name": "furkancodes",
+    "url": "https://github.com/furkancodes"
+  },
+  "homepage": "https://github.com/furkancodes/overlook#readme",
+  "repository": "https://github.com/furkancodes/overlook",
+  "license": "MIT",
+  "keywords": ["dashboard", "data", "duckdb", "charts", "csv", "postgres", "mcp"],
+  "icon": "./.claude-plugin/icon.png",
+  "documentationUrl": "https://github.com/furkancodes/overlook#readme",
+  "supportUrl": "https://github.com/furkancodes/overlook/issues"
+}

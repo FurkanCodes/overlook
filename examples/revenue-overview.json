@@ -1,0 +1,116 @@
+{
+    "version":  1,
+    "title":  "Revenue overview",
+    "description":  "Orders from the example dataset. Every number links to the query that produced it.",
+    "filters":  [
+                    {
+                        "id":  "region",
+                        "label":  "Region",
+                        "type":  "select",
+                        "source":  "orders",
+                        "options_sql":  "SELECT DISTINCT region FROM orders ORDER BY 1"
+                    },
+                    {
+                        "id":  "since",
+                        "label":  "Since",
+                        "type":  "date",
+                        "default":  "2026-01-01"
+                    }
+                ],
+    "panels":  [
+                   {
+                       "id":  "revenue",
+                       "type":  "kpi",
+                       "title":  "Monthly revenue",
+                       "source":  "orders",
+                       "sql":  "SELECT date_trunc(\u0027month\u0027, order_date) AS month, sum(amount) AS revenue FROM orders WHERE NOT refunded AND ($region IS NULL OR region = $region) GROUP BY 1 ORDER BY 1",
+                       "value":  "revenue",
+                       "format":  "currency",
+                       "unit":  "USD",
+                       "x":  "month"
+                   },
+                   {
+                       "id":  "orders_count",
+                       "type":  "kpi",
+                       "title":  "Monthly orders",
+                       "source":  "orders",
+                       "sql":  "SELECT date_trunc(\u0027month\u0027, order_date) AS month, count(*) AS orders FROM orders WHERE ($region IS NULL OR region = $region) GROUP BY 1 ORDER BY 1",
+                       "value":  "orders",
+                       "format":  "number",
+                       "x":  "month"
+                   },
+                   {
+                       "id":  "refund_rate",
+                       "type":  "kpi",
+                       "title":  "Refund rate",
+                       "source":  "orders",
+                       "sql":  "SELECT date_trunc(\u0027month\u0027, order_date) AS month, avg(refunded::INT) AS refund_rate FROM orders WHERE ($region IS NULL OR region = $region) GROUP BY 1 ORDER BY 1",
+                       "value":  "refund_rate",
+                       "better":  "down",
+                       "format":  "percent",
+                       "x":  "month"
+                   },
+                   {
+                       "id":  "monthly_revenue",
+                       "type":  "area",
+                       "title":  "Monthly revenue by category",
+                       "source":  "orders",
+                       "sql":  "SELECT date_trunc(\u0027month\u0027, order_date) AS month, category, sum(amount) AS revenue FROM orders WHERE NOT refunded AND ($region IS NULL OR region = $region) AND ($since IS NULL OR order_date \u003e= CAST($since AS DATE)) GROUP BY ALL ORDER BY 1, 2",
+                       "x":  "month",
+                       "y":  "revenue",
+                       "series":  "category",
+                       "stacked":  true,
+                       "format":  "currency",
+                       "unit":  "USD",
+                       "width":  "full"
+                   },
+                   {
+                       "id":  "by_region",
+                       "type":  "bar",
+                       "title":  "Revenue by region",
+                       "source":  "orders",
+                       "sql":  "SELECT region, sum(amount) AS revenue FROM orders WHERE NOT refunded AND ($since IS NULL OR order_date \u003e= CAST($since AS DATE)) GROUP BY 1 ORDER BY 2 DESC",
+                       "x":  "region",
+                       "y":  "revenue",
+                       "horizontal":  true,
+                       "format":  "currency",
+                       "unit":  "USD"
+                   },
+                   {
+                       "id":  "by_channel",
+                       "type":  "bar",
+                       "title":  "Monthly orders by channel",
+                       "source":  "orders",
+                       "sql":  "SELECT strftime(date_trunc(\u0027month\u0027, order_date), \u0027%b %Y\u0027) AS month, channel, count(*) AS orders FROM orders WHERE ($region IS NULL OR region = $region) AND ($since IS NULL OR order_date \u003e= CAST($since AS DATE)) GROUP BY date_trunc(\u0027month\u0027, order_date), 1, 2 ORDER BY date_trunc(\u0027month\u0027, order_date), 2",
+                       "x":  "month",
+                       "y":  "orders",
+                       "series":  "channel",
+                       "stacked":  true
+                   },
+                   {
+                       "id":  "signups",
+                       "type":  "line",
+                       "title":  "Weekly signups by traffic source",
+                       "source":  "traffic",
+                       "sql":  "SELECT date_trunc(\u0027week\u0027, date) AS week, source, sum(signups) AS signups FROM traffic WHERE ($since IS NULL OR date_trunc(\u0027week\u0027, date) \u003e= CAST($since AS DATE)) GROUP BY ALL HAVING count(DISTINCT date) = 7 ORDER BY 1",
+                       "x":  "week",
+                       "y":  "signups",
+                       "series":  "source",
+                       "width":  "full"
+                   },
+                   {
+                       "id":  "top_products",
+                       "type":  "table",
+                       "title":  "Products",
+                       "source":  "orders",
+                       "sql":  "SELECT product, category, count(*) AS orders, sum(quantity) AS units, round(sum(amount), 2) AS revenue, round(avg(refunded::INT), 4) AS refund_rate FROM orders WHERE ($region IS NULL OR region = $region) AND ($since IS NULL OR order_date \u003e= CAST($since AS DATE)) GROUP BY 1, 2 ORDER BY revenue DESC",
+                       "format":  "number",
+                       "formats":  { "revenue": "currency" }
+                   },
+                   {
+                       "id":  "about",
+                       "type":  "text",
+                       "markdown":  "### About this data\nGenerated by `scripts/make-examples.mjs`. Click a panel\u0027s **source** to see the exact SQL behind it, or use its **⋯** menu to read a chart as a table."
+                   }
+               ]
+}

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.demo/
+eval/results/
+*.tmp
+.DS_Store
+
+# Local tool state (Claude Code launch config, Impeccable design checks)
+.claude/
+.impeccable/
+# Copy of docs/concepts_brief.md left by the brainstorm step
+/concepts_brief.md
+# npm pack output
+*.tgz

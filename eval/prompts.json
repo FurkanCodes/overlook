@@ -1,0 +1,84 @@
+{
+  "prompts": [
+    {
+      "id": "monthly-revenue",
+      "instruction": "Make a dashboard called monthly-revenue that shows total revenue (amount) per month as a line chart.",
+      "checks": [{ "types": ["line", "area", "bar"], "check_sql": "SELECT date_trunc('month', order_date) AS m, sum(amount) AS v FROM orders GROUP BY 1" }]
+    },
+    {
+      "id": "region-bars",
+      "instruction": "Build a dashboard named region-revenue with a bar chart of total revenue by region.",
+      "checks": [{ "types": ["bar"], "check_sql": "SELECT region, sum(amount) FROM orders GROUP BY 1" }]
+    },
+    {
+      "id": "kpi-orders",
+      "instruction": "Create a dashboard called order-count with a single KPI showing the total number of orders.",
+      "checks": [{ "types": ["kpi"], "check_sql": "SELECT count(*) FROM orders" }]
+    },
+    {
+      "id": "refunds-excluded",
+      "instruction": "Make a dashboard net-revenue with a KPI of total revenue excluding refunded orders, and a bar chart of that same net revenue by product category.",
+      "checks": [
+        { "types": ["kpi"], "check_sql": "SELECT sum(amount) FROM orders WHERE NOT refunded" },
+        { "types": ["bar"], "check_sql": "SELECT category, sum(amount) FROM orders WHERE NOT refunded GROUP BY 1" }
+      ]
+    },
+    {
+      "id": "top-products",
+      "instruction": "Dashboard top-products: a table of the 5 products with the most revenue, with product name and revenue.",
+      "checks": [{ "types": ["table", "bar"], "check_sql": "SELECT product, sum(amount) AS r FROM orders GROUP BY 1 ORDER BY 2 DESC LIMIT 5" }]
+    },
+    {
+      "id": "channel-series",
+      "instruction": "Create a dashboard channel-mix showing the number of orders per month split by channel, as a stacked bar chart.",
+      "checks": [{ "types": ["bar", "area", "line"], "check_sql": "SELECT date_trunc('month', order_date) AS m, channel, count(*) FROM orders GROUP BY 1, 2" }]
+    },
+    {
+      "id": "traffic-sessions",
+      "instruction": "Make a dashboard sessions-by-source with total sessions per traffic source from the traffic data, as a bar chart.",
+      "checks": [{ "types": ["bar"], "check_sql": "SELECT source, sum(sessions) FROM traffic GROUP BY 1" }]
+    },
+    {
+      "id": "conversion",
+      "instruction": "Dashboard signup-rate: a bar chart of the signup rate (signups divided by sessions) for each traffic source.",
+      "checks": [{ "types": ["bar", "table"], "check_sql": "SELECT source, sum(signups) / sum(sessions) FROM traffic GROUP BY 1" }]
+    },
+    {
+      "id": "region-filter",
+      "instruction": "Make a dashboard regional with a select filter for region (options from the data) and a KPI of total revenue that respects the filter. With no region selected it should show the total for all regions.",
+      "checks": [{ "types": ["kpi"], "check_sql": "SELECT sum(amount) FROM orders" }],
+      "needs_filter": "region"
+    },
+    {
+      "id": "edit-add-panel",
+      "instruction": "Edit the existing dashboard named start: keep everything and add a bar chart of revenue by channel.",
+      "start": "start-basic",
+      "keep_ids": ["total", "by_month"],
+      "checks": [{ "types": ["bar"], "check_sql": "SELECT channel, sum(amount) FROM orders GROUP BY 1" }]
+    },
+    {
+      "id": "edit-change-metric",
+      "instruction": "Edit the existing dashboard named start: change the monthly chart so it shows number of orders per month instead of revenue. Keep the other panel.",
+      "start": "start-basic",
+      "keep_ids": ["total", "by_month"],
+      "checks": [{ "types": ["line", "area", "bar"], "check_sql": "SELECT date_trunc('month', order_date), count(*) FROM orders GROUP BY 1" }]
+    },
+    {
+      "id": "edit-retitle",
+      "instruction": "Edit the existing dashboard named start: rename it to 'Company revenue' and make the monthly chart full width. Do not remove anything.",
+      "start": "start-basic",
+      "keep_ids": ["total", "by_month"],
+      "checks": [{ "types": ["kpi"], "check_sql": "SELECT sum(amount) FROM orders" }]
+    }
+  ],
+  "starts": {
+    "start-basic": {
+      "version": 1,
+      "title": "Revenue",
+      "panels": [
+        { "id": "total", "type": "kpi", "title": "Total revenue", "source": "orders", "sql": "SELECT sum(amount) AS revenue FROM orders", "value": "revenue", "format": "currency" },
+        { "id": "by_month", "type": "line", "title": "Revenue by month", "source": "orders", "sql": "SELECT date_trunc('month', order_date) AS month, sum(amount) AS revenue FROM orders GROUP BY 1 ORDER BY 1", "x": "month", "y": "revenue" }
+      ]
+    }
+  }
+}
