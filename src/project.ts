@@ -201,18 +201,21 @@ export function isInside(root: string, child: string): boolean {
  * anything outside the project. Globs are checked by their fixed prefix.
  */
 export function projectFileSource(root: string, target: string, infer: (p: string) => SourceDef): SourceDef {
+  // Compare real paths on both sides: the project folder itself may sit
+  // behind a symlink or junction (on macOS, /var is /private/var).
+  const realRoot = realpathSync(root);
   const abs = resolve(root, target);
   if (hasGlob(abs)) {
     const fixed = abs.slice(0, abs.search(/[*?[\]{}]/));
     const base = existsSync(fixed) && statSync(fixed).isDirectory() ? fixed : dirname(fixed);
-    if (/(^|[\\/])\.\.([\\/]|$)/.test(target) || !isInside(root, realpathSync(base))) {
+    if (/(^|[\\/])\.\.([\\/]|$)/.test(target) || !isInside(realRoot, realpathSync(base))) {
       throw new Error(`"${target}" is outside this project (${normalizePath(root)})`);
     }
     return infer(abs);
   }
   if (!existsSync(abs)) throw new Error(`no file at ${normalizePath(abs)}`);
   const real = realpathSync(abs);
-  if (!isInside(root, real)) throw new Error(`"${target}" is outside this project (${normalizePath(root)})`);
+  if (!isInside(realRoot, real)) throw new Error(`"${target}" is outside this project (${normalizePath(root)})`);
   const def = infer(real);
   if ((def.type === 'sqlite' || def.type === 'duckdb') && sniffDatabase(real) !== def.type) {
     const actual = sniffDatabase(real);

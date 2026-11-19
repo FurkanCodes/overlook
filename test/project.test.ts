@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -73,6 +73,14 @@ describe('add_source paths', () => {
     expect(() => projectFileSource(root, join(outside, 'secret.csv'), inferSource)).toThrow(/outside this project/);
     expect(() => projectFileSource(root, '../' + outside.split(/[\\/]/).pop() + '/secret.csv', inferSource)).toThrow(/outside this project/);
     expect(() => projectFileSource(root, '../*/secret.csv', inferSource)).toThrow(/outside this project/);
+  });
+
+  it('accepts files when the project folder itself is reached through a link', () => {
+    // As on macOS, where the temp folder /var/... is really /private/var/...
+    const link = join(outside, 'project-link');
+    symlinkSync(root, link, process.platform === 'win32' ? 'junction' : 'dir');
+    expect(projectFileSource(link, 'data/Sales 2026.csv', inferSource)).toMatchObject({ type: 'file' });
+    expect(() => projectFileSource(link, join(outside, 'secret.csv'), inferSource)).toThrow(/outside this project/);
   });
 
   it('refuses a .db file that is not a database', () => {
