@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="128" viewBox="0 0 560 128" role="img" aria-label="Overlook">
+  <title>Overlook</title>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#17181c"/>
+  <rect x="31" y="70" width="18" height="34" rx="6" fill="#2a78d6"/>
+  <rect x="55" y="49" width="18" height="55" rx="6" fill="#eb6834"/>
+  <rect x="79" y="26" width="18" height="78" rx="6" fill="#1baf7a"/>
+  <text x="152" y="76" font-family="Inter, 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="62" font-weight="700" letter-spacing="-2" fill="#17181c">Overlook</text>
+  <text x="155" y="106" font-family="Inter, 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif" font-size="19" font-weight="500" fill="#5f6168">Live dashboards for any agent, any model</text>
+</svg>
